@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../api/client';
 import VocabCard from '../components/VocabCard';
+import { useVocabStore } from '../store/vocabStore';
 
 interface WordDetail { word: any; meanings: any[]; examples: any[]; phrases: any[]; relations: any[]; }
 
@@ -27,9 +28,10 @@ export default function Vocabulary() {
 // ====== 背诵 ======
 function LearnTab(){
   const [words,setWords]=useState<WordDetail[]>([]);const [ci,setCi]=useState(0);const [l,setL]=useState(true);const [done,setDone]=useState(false);const [st,setSt]=useState({m:0,l:0,s:0});
+  const triggerRefresh=useVocabStore(s=>s.triggerRefresh);
   const load=useCallback(async()=>{setL(true);try{const{data}=await api.post('/vocabulary/draw',{count:10});if(!data.words.length){setWords([]);setDone(true);setL(false);return}const d=await Promise.all(data.words.map((w:any)=>api.get(`/vocabulary/${w.id}`).then(r=>r.data)));setWords(d);setCi(0);setDone(false);setSt({m:0,l:0,s:0})}catch{}setL(false)},[]);
   useEffect(()=>{load()},[load]);
-  const hs=async(s:'mastered'|'learning'|'skipped')=>{const w=words[ci];if(!w)return;try{await api.patch(`/vocabulary/${w.word.id}/status`,{status:s})}catch{}setSt(p=>({...p,[s==='mastered'?'m':s==='learning'?'l':'s']:p[s==='mastered'?'m':s==='learning'?'l':'s']+1}));ci+1<words.length?setCi(ci+1):setDone(true)};
+  const hs=async(s:'mastered'|'learning'|'skipped')=>{const w=words[ci];if(!w)return;try{await api.patch(`/vocabulary/${w.word.id}/status`,{status:s});triggerRefresh()}catch{}setSt(p=>({...p,[s==='mastered'?'m':s==='learning'?'l':'s']:p[s==='mastered'?'m':s==='learning'?'l':'s']+1}));ci+1<words.length?setCi(ci+1):setDone(true)};
   if(l)return<div className="flex justify-center h-64 items-center"><div className="animate-spin h-8 w-8 border-4 border-indigo-600 border-t-transparent rounded-full"/></div>;
   if(done)return<div className="text-center py-16"><div className="text-5xl mb-4">🎉</div><h2 className="text-2xl font-bold text-slate-800 mb-2">{words.length===0?'词库暂无新词！':'本轮完成！'}</h2><div className="flex justify-center gap-6 text-sm text-slate-600 mb-6"><span>✅{st.m}</span><span>🔄{st.l}</span><span>⏭️{st.s}</span></div><button onClick={load} className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium">再来一轮</button></div>;
   return <div><div className="flex gap-4 text-sm text-slate-500 mb-4"><span>✅{st.m}</span><span>🔄{st.l}</span><span>⏭️{st.s}</span></div>{words[ci]&&<VocabCard data={words[ci]} onStatus={hs} index={ci} total={words.length}/>}</div>;
@@ -55,11 +57,12 @@ function ListTab(){
   const [al,setAl]=useState('A');const [words,setWords]=useState<any[]>([]);const [total,setTotal]=useState(0);const [l,setL]=useState(false);const [sw,setSw]=useState<WordDetail|null>(null);const [filter,setFilter]=useState('all');
   const [editing,setEditing]=useState<number|null>(null);
 
+  const refreshKey=useVocabStore(s=>s.refreshKey);
   const load=useCallback(async()=>{
     setL(true);setSw(null);
     const{data}=await api.get(`/vocabulary/list?letter=${al}&limit=200&status=${filter}`);
     setWords(data.words);setTotal(data.total);setL(false);
-  },[al,filter]);
+  },[al,filter,refreshKey]);
   useEffect(()=>{load()},[load]);
 
   const changeStatus=async(wid:number,status:string)=>{
