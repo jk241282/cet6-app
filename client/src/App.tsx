@@ -8,6 +8,7 @@ import Translation from './pages/Translation';
 import Writing from './pages/Writing';
 import Listening from './pages/Listening';
 import Exam from './pages/Exam';
+import Strategy from './pages/Strategy';
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Route path="/auth" element={<Auth />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
+        <Route path="strategy" element={<Strategy />} />
         <Route path="vocabulary" element={<Vocabulary />} />
         <Route path="reading" element={<Reading />} />
         <Route path="translation" element={<Translation />} />

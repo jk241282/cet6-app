@@ -5,6 +5,9 @@ import { fileURLToPath } from 'url';
 import { initDb } from './db/index.js';
 import authRoutes from './routes/auth.js';
 import vocabularyRoutes from './routes/vocabulary.js';
+import readingRoutes from './routes/reading.js';
+import translationRoutes from './routes/translation.js';
+import writingRoutes from './routes/writing.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,6 +18,9 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/vocabulary', vocabularyRoutes);
+app.use('/api/reading', readingRoutes);
+app.use('/api/translation', translationRoutes);
+app.use('/api/writing', writingRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });

@@ -2,6 +2,7 @@ import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 
 const navItems = [
   { to: '/', label: '学习仪表盘', icon: '🏠' },
+  { to: '/strategy', label: '备考思路', icon: '💡' },
   { to: '/vocabulary', label: '词汇背诵', icon: '📝' },
   { to: '/reading', label: '阅读理解', icon: '📖' },
   { to: '/translation', label: '翻译训练', icon: '🌐' },
