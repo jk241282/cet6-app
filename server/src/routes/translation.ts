@@ -7,7 +7,7 @@ router.use(authenticate);
 
 // 获取翻译题目列表
 router.get('/exercises', (req: AuthRequest, res) => {
-  const { page = '1', limit = '10' } = req.query;
+  const { page = '1', limit = '50' } = req.query;
   const offset = (Number(page) - 1) * Number(limit);
   const exercises = queryAll(
     'SELECT id, source_text_cn, key_points, difficulty, exam_year FROM translation_exercises ORDER BY id DESC LIMIT ? OFFSET ?',

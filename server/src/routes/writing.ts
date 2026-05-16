@@ -14,7 +14,7 @@ router.get('/topics', (req: AuthRequest, res) => {
     sql += ' WHERE category = ?';
     params.push(String(category));
   }
-  sql += ' ORDER BY id DESC';
+  sql += ' ORDER BY id DESC LIMIT 50';
   const topics = queryAll(sql, params);
   res.json({ topics });
 });
