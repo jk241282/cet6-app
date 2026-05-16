@@ -52,7 +52,7 @@ function SearchTab(){
 // ====== 词表(含状态管理) ======
 function ListTab(){
   const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-  const [al,setAl]==useState('A');const [words,setWords]=useState<any[]>([]);const [total,setTotal]=useState(0);const [l,setL]=useState(false);const [sw,setSw]=useState<WordDetail|null>(null);const [filter,setFilter]=useState('all');
+  const [al,setAl]=useState('A');const [words,setWords]=useState<any[]>([]);const [total,setTotal]=useState(0);const [l,setL]=useState(false);const [sw,setSw]=useState<WordDetail|null>(null);const [filter,setFilter]=useState('all');
   const [editing,setEditing]=useState<number|null>(null);
 
   const load=useCallback(async()=>{
