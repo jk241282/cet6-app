@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS vocabulary (
   part_of_speech TEXT NOT NULL,
   difficulty_level INTEGER DEFAULT 1,
   frequency_rank INTEGER,
+  exam_frequency TEXT DEFAULT '0',  -- 近10年真题出现次数，如 '15' 表示出现15次
   root_word TEXT,
   memory_tip TEXT,
   is_extra BOOLEAN DEFAULT 0

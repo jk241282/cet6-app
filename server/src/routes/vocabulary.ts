@@ -34,19 +34,38 @@ router.get('/search', (req: AuthRequest, res) => {
   res.json({ words });
 });
 
-// 按字母获取单词列表
+// 按字母获取单词列表 (含用户学习状态)
 router.get('/list', (req: AuthRequest, res) => {
-  const { letter = 'A', page = '1', limit = '100' } = req.query;
+  const { letter = 'A', page = '1', limit = '100', status } = req.query;
+  const userId = req.userId!;
   const offset = (Number(page) - 1) * Number(limit);
-  const words = queryAll(
-    `SELECT v.*, wm.meaning_cn FROM vocabulary v LEFT JOIN word_meanings wm ON v.id=wm.word_id AND wm.is_primary=1 WHERE v.word LIKE ? ORDER BY v.word ASC LIMIT ? OFFSET ?`,
-    [`${letter}%`, Number(limit), offset]
-  );
-  const total = queryOne(
-    `SELECT COUNT(*) as count FROM vocabulary WHERE word LIKE ?`,
-    [`${letter}%`]
-  ) as { count: number };
-  res.json({ words, total: total.count, letter });
+
+  let sql = `SELECT v.*, wm.meaning_cn, uv.status as user_status, uv.last_reviewed FROM vocabulary v LEFT JOIN word_meanings wm ON v.id=wm.word_id AND wm.is_primary=1 LEFT JOIN user_vocabulary uv ON v.id=uv.word_id AND uv.user_id=? WHERE 1=1`;
+  const params: (string|number)[] = [userId];
+
+  if (letter && letter !== 'all') {
+    sql += ' AND v.word LIKE ?';
+    params.push(`${letter}%`);
+  }
+  if (status && status !== 'all') {
+    if (status === 'none') sql += ' AND uv.status IS NULL';
+    else { sql += ' AND uv.status = ?'; params.push(String(status)); }
+  }
+
+  const total = queryAll(`SELECT COUNT(*) as count FROM (${sql})`, params);
+  sql += ' ORDER BY v.word ASC LIMIT ? OFFSET ?';
+  params.push(Number(limit), offset);
+
+  const words = queryAll(sql, params);
+  res.json({ words, total: (total[0] as any).count, letter: letter || 'all' });
+});
+
+// 删除用户对单词的学习状态 (取消标记)
+router.delete('/:wordId/status', (req: AuthRequest, res) => {
+  const { wordId } = req.params;
+  const userId = req.userId!;
+  execute('DELETE FROM user_vocabulary WHERE user_id = ? AND word_id = ?', [userId, wordId]);
+  res.json({ success: true });
 });
 
 // 获取单词的完整知识点 (支持按ID或按word查询)
