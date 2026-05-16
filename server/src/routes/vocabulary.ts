@@ -23,7 +23,33 @@ router.post('/draw', (req: AuthRequest, res) => {
   res.json({ words });
 });
 
-// 获取单词的完整知识点
+// 单词搜索
+router.get('/search', (req: AuthRequest, res) => {
+  const { q } = req.query;
+  if (!q || String(q).length < 1) return res.json({ words: [] });
+  const words = queryAll(
+    `SELECT v.*, wm.meaning_cn FROM vocabulary v LEFT JOIN word_meanings wm ON v.id=wm.word_id AND wm.is_primary=1 WHERE v.word LIKE ? LIMIT 20`,
+    [`${q}%`]
+  );
+  res.json({ words });
+});
+
+// 按字母获取单词列表
+router.get('/list', (req: AuthRequest, res) => {
+  const { letter = 'A', page = '1', limit = '100' } = req.query;
+  const offset = (Number(page) - 1) * Number(limit);
+  const words = queryAll(
+    `SELECT v.*, wm.meaning_cn FROM vocabulary v LEFT JOIN word_meanings wm ON v.id=wm.word_id AND wm.is_primary=1 WHERE v.word LIKE ? ORDER BY v.word ASC LIMIT ? OFFSET ?`,
+    [`${letter}%`, Number(limit), offset]
+  );
+  const total = queryOne(
+    `SELECT COUNT(*) as count FROM vocabulary WHERE word LIKE ?`,
+    [`${letter}%`]
+  ) as { count: number };
+  res.json({ words, total: total.count, letter });
+});
+
+// 获取单词的完整知识点 (支持按ID或按word查询)
 router.get('/:wordId', (req: AuthRequest, res) => {
   const { wordId } = req.params;
 
