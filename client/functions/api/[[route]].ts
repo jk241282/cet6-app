@@ -181,8 +181,152 @@ vocab.delete('/:wordId/status', async (c) => {
 });
 
 app.route('/api/vocabulary', vocab);
+
+// Reading routes
+app.get('/api/reading/passages', authVerify, async (c) => {
+  const topic = c.req.query('topic');
+  const page = Number(c.req.query('page') || '1');
+  const limit = Number(c.req.query('limit') || '10');
+  const offset = (page - 1) * limit;
+  let sql = 'SELECT id, title, source, difficulty, word_count, topic_tag FROM reading_passages';
+  const params: any[] = [];
+  if (topic && topic !== 'all') { sql += ' WHERE topic_tag = ?'; params.push(topic); }
+  sql += ' ORDER BY id DESC LIMIT ? OFFSET ?';
+  params.push(limit, offset);
+  const { results } = await c.env.DB.prepare(sql).bind(...params).all();
+  return c.json({ passages: results });
+});
+
+app.get('/api/reading/passages/:id', authVerify, async (c) => {
+  const id = c.req.param('id');
+  const passage = await c.env.DB.prepare('SELECT * FROM reading_passages WHERE id = ?').bind(Number(id)).first();
+  if (!passage) return c.json({ error: '文章不存在' }, 404);
+  const { results: questions } = await c.env.DB.prepare('SELECT * FROM reading_questions WHERE passage_id = ?').bind(Number(id)).all();
+  return c.json({ passage, questions });
+});
+
+app.post('/api/reading/passages/:id/submit', authVerify, async (c) => {
+  const id = c.req.param('id');
+  const userId = c.get('userId');
+  const { answers } = await c.req.json();
+  const { results: questions } = await c.env.DB.prepare('SELECT * FROM reading_questions WHERE passage_id = ?').bind(Number(id)).all();
+  let correctCount = 0;
+  const resultObj: Record<string, any> = {};
+  for (const q of questions as any[]) {
+    const userAnswer = answers[q.id] || '';
+    const correct = userAnswer.trim().toUpperCase() === q.answer.trim().toUpperCase();
+    if (correct) correctCount++;
+    resultObj[q.id] = { correct, userAnswer, correctAnswer: q.answer };
+    if (!correct) {
+      const existing = await c.env.DB.prepare('SELECT id FROM user_errors WHERE user_id=? AND question_type=? AND question_id=?').bind(userId, 'reading', q.id).first();
+      if (!existing) {
+        await c.env.DB.prepare('INSERT INTO user_errors (user_id, question_type, question_id, user_answer, correct_answer) VALUES (?,?,?,?,?)').bind(userId, 'reading', q.id, userAnswer, q.answer).run();
+      }
+    }
+  }
+  return c.json({ score: correctCount, total: questions.length, results: resultObj });
+});
+
+app.get('/api/reading/topics', authVerify, async (c) => {
+  const { results } = await c.env.DB.prepare('SELECT DISTINCT topic_tag FROM reading_passages WHERE topic_tag IS NOT NULL').all();
+  return c.json({ topics: results.map((r: any) => r.topic_tag) });
+});
+
+// Translation routes
+app.get('/api/translation/exercises', authVerify, async (c) => {
+  const page = Number(c.req.query('page') || '1');
+  const limit = Number(c.req.query('limit') || '50');
+  const offset = (page - 1) * limit;
+  const { results } = await c.env.DB.prepare('SELECT id, source_text_cn, key_points, difficulty, exam_year FROM translation_exercises ORDER BY id DESC LIMIT ? OFFSET ?').bind(limit, offset).all();
+  return c.json({ exercises: results });
+});
+
+app.get('/api/translation/exercises/:id', authVerify, async (c) => {
+  const id = c.req.param('id');
+  const exercise = await c.env.DB.prepare('SELECT * FROM translation_exercises WHERE id = ?').bind(Number(id)).first();
+  if (!exercise) return c.json({ error: '题目不存在' }, 404);
+  return c.json({ exercise });
+});
+
+app.post('/api/translation/exercises/:id/submit', authVerify, async (c) => {
+  const id = c.req.param('id');
+  const { userTranslation } = await c.req.json();
+  const exercise = await c.env.DB.prepare('SELECT reference_en FROM translation_exercises WHERE id = ?').bind(Number(id)).first() as any;
+  if (!exercise) return c.json({ error: '题目不存在' }, 404);
+  return c.json({ reference: exercise.reference_en, userTranslation, message: '请对照参考译文自我评估' });
+});
+
+app.get('/api/translation/tips', authVerify, (c) => {
+  return c.json({ tips: [
+    '先通读中文全文，理解整体意思再动笔翻译',
+    '确定英语主干结构（主谓宾），再添加修饰成分',
+    '避免逐字直译，追求意译和自然流畅的表达',
+    '常考主题词汇：中国传统文化、科技发展、社会热点',
+    '遇到不会的词，用已知的近义词或解释性翻译替代',
+    '翻译完成后通读检查：时态一致性、单复数、冠词用法',
+    '注意中文无主语句 → 英语必须补主语或用被动语态',
+    '四字成语 → 意译核心含义，不必逐字翻译',
+  ]});
+});
+
+// Writing routes
+app.get('/api/writing/topics', authVerify, async (c) => {
+  const category = c.req.query('category');
+  let sql = 'SELECT id, topic_cn, topic_en, category, difficulty, exam_year FROM writing_topics';
+  const params: string[] = [];
+  if (category && category !== 'all') { sql += ' WHERE category = ?'; params.push(category); }
+  sql += ' ORDER BY id DESC LIMIT 50';
+  const { results } = await c.env.DB.prepare(sql).bind(...params).all();
+  return c.json({ topics: results });
+});
+
+app.get('/api/writing/topics/:id', authVerify, async (c) => {
+  const id = c.req.param('id');
+  const topic = await c.env.DB.prepare('SELECT * FROM writing_topics WHERE id = ?').bind(Number(id)).first();
+  if (!topic) return c.json({ error: '话题不存在' }, 404);
+  return c.json({ topic });
+});
+
+app.get('/api/writing/templates', authVerify, async (c) => {
+  const category = c.req.query('category');
+  let sql = 'SELECT id, title, category, template_structure, model_paragraph_en, model_paragraph_cn FROM writing_templates';
+  const params: string[] = [];
+  if (category && category !== 'all') { sql += ' WHERE category = ?'; params.push(category); }
+  const { results } = await c.env.DB.prepare(sql).bind(...params).all();
+  return c.json({ templates: results });
+});
+
+app.get('/api/writing/templates/:id', authVerify, async (c) => {
+  const id = c.req.param('id');
+  const template = await c.env.DB.prepare('SELECT * FROM writing_templates WHERE id = ?').bind(Number(id)).first();
+  if (!template) return c.json({ error: '模板不存在' }, 404);
+  return c.json({ template });
+});
+
+app.get('/api/writing/sentences', authVerify, async (c) => {
+  const category = c.req.query('category');
+  const topic_tag = c.req.query('topic_tag');
+  let sql = 'SELECT * FROM writing_sentences WHERE 1=1';
+  const params: string[] = [];
+  if (category && category !== 'all') { sql += ' AND category = ?'; params.push(category); }
+  if (topic_tag) { sql += ' AND topic_tag = ?'; params.push(topic_tag); }
+  sql += ' ORDER BY id DESC LIMIT 50';
+  const { results } = await c.env.DB.prepare(sql).bind(...params).all();
+  return c.json({ sentences: results });
+});
+
+app.get('/api/writing/categories', authVerify, async (c) => {
+  const t1 = await c.env.DB.prepare('SELECT DISTINCT category FROM writing_topics WHERE category IS NOT NULL').all();
+  const t2 = await c.env.DB.prepare('SELECT DISTINCT category FROM writing_templates WHERE category IS NOT NULL').all();
+  const t3 = await c.env.DB.prepare('SELECT DISTINCT category FROM writing_sentences WHERE category IS NOT NULL').all();
+  return c.json({
+    topics: t1.results.map((r: any) => r.category),
+    templates: t2.results.map((r: any) => r.category),
+    sentences: t3.results.map((r: any) => r.category),
+  });
+});
+
 app.get('/api/reading', authVerify, (c) => c.json({ passages: [] }));
 app.get('/api/translation', authVerify, (c) => c.json({ exercises: [] }));
-app.get('/api/writing', authVerify, (c) => c.json({ topics: [] }));
 
 export const onRequest = handle(app);
