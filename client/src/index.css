@@ -2,6 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: #FFFBF5;
+  }
+
+  /* Fun decorative background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 85% 75%, rgba(255, 107, 107, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(78, 205, 196, 0.03) 0%, transparent 50%);
+  }
+
+  #root {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #a78bfa, #c4b5fd);
+    border-radius: 3px;
+  }
+}
+
+@layer components {
+  /* Glass card effect */
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-white/60;
+  }
+
+  /* Gradient text utility */
+  .gradient-text {
+    @apply bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 bg-clip-text text-transparent;
+  }
+
+  /* Fun button base */
+  .btn-fun {
+    @apply relative overflow-hidden rounded-2xl font-semibold text-white
+           shadow-fun hover:shadow-fun-lg
+           transition-all duration-300
+           hover:-translate-y-0.5 active:translate-y-0;
+  }
+
+  .btn-fun::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* Bouncy card */
+  .card-fun {
+    @apply bg-white rounded-3xl border-2 border-transparent
+           shadow-card hover:shadow-card-hover
+           transition-all duration-300
+           hover:-translate-y-1;
+  }
+
+  /* Colorful card borders */
+  .card-border-violet { @apply border-violet-200 hover:border-violet-400; }
+  .card-border-coral { @apply border-rose-200 hover:border-rose-400; }
+  .card-border-mint { @apply border-emerald-200 hover:border-emerald-400; }
+  .card-border-sky { @apply border-sky-200 hover:border-sky-400; }
+  .card-border-sunny { @apply border-amber-200 hover:border-amber-400; }
+
+  /* Animated star/sparkle */
+  .sparkle {
+    animation: sparkleAnim 1.5s ease-in-out infinite;
+  }
+
+  /* Floating decoration */
+  .float-decor {
+    animation: floatAnim 4s ease-in-out infinite;
+  }
+}
+
+@keyframes sparkleAnim {
+  0%, 100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(10deg); }
+}
+
+@keyframes floatAnim {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(3deg); }
+  66% { transform: translateY(4px) rotate(-3deg); }
+}
+
+/* Decorative dot pattern */
+.dot-pattern {
+  background-image: radial-gradient(circle, rgba(139, 92, 246, 0.1) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Stripe pattern */
+.stripe-pattern {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(139, 92, 246, 0.03) 10px,
+    rgba(139, 92, 246, 0.03) 20px
+  );
 }

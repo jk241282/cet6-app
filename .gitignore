@@ -1,4 +1,10 @@
 .superpowers/
 node_modules/
-server/data/
-*.db
+client/dist/
+*.docx
+*.db-journal
+word-entries*.json
+comparison.json
+db-only-words.json
+enrich-progress.json
+unpacked-docx/

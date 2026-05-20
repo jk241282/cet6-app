@@ -107,7 +107,7 @@ export default function Strategy() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-slate-800 mb-1">备考思路</h2>
+      <h2 className="text-2xl font-bold font-fun bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent mb-1">备考思路</h2>
       <p className="text-slate-500 text-sm mb-6">科学规划 + 专项策略 + 避坑指南，高效备考 CET-6</p>
 
       {/* Tabs */}
@@ -120,10 +120,10 @@ export default function Strategy() {
           <button
             key={key}
             onClick={() => setActiveTab(key as typeof activeTab)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-2xl text-sm font-semibold transition-all duration-300 ${
               activeTab === key
-                ? 'bg-indigo-600 text-white'
-                : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                ? 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-fun hover:shadow-fun-lg hover:-translate-y-0.5'
+                : 'bg-white text-slate-600 border-2 border-indigo-100 hover:border-indigo-300 hover:shadow-card'
             }`}
           >
             {label}
@@ -135,22 +135,22 @@ export default function Strategy() {
       {activeTab === 'plan' && (
         <div className="space-y-6">
           {/* 核心原则 */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-6 text-white">
-            <h3 className="text-lg font-bold mb-3">💡 备考核心原则</h3>
+          <div className="bg-gradient-to-r from-indigo-600 to-violet-600 rounded-3xl p-6 text-white shadow-fun-lg">
+            <h3 className="text-lg font-bold font-fun mb-3">💡 备考核心原则</h3>
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-2xl p-3 backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-white/15">
                 <div className="font-semibold mb-1">🎯 抓大放小</div>
                 <div className="opacity-80">听力(248.5) + 阅读(248.5) = 70%，主攻方向</div>
               </div>
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-2xl p-3 backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-white/15">
                 <div className="font-semibold mb-1">📝 围绕真题</div>
                 <div className="opacity-80">所有练习围绕近 3 年真题，不做偏题难题</div>
               </div>
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-2xl p-3 backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-white/15">
                 <div className="font-semibold mb-1">⏰ 每日固定</div>
                 <div className="opacity-80">每天 1.5-2 小时，不贪多求快，贵在坚持</div>
               </div>
-              <div className="bg-white/10 rounded-lg p-3">
+              <div className="bg-white/10 rounded-2xl p-3 backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-white/15">
                 <div className="font-semibold mb-1">✅ 放弃难点</div>
                 <div className="opacity-80">先保证拿到基础分，难题不计较</div>
               </div>
@@ -159,15 +159,15 @@ export default function Strategy() {
 
           {/* Three Phases */}
           {phases.map((phase, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-5">
-              <h3 className="text-lg font-bold text-slate-800 mb-3">
+            <div key={i} className="bg-white rounded-2xl border-2 border-indigo-100 shadow-fun p-5 transition-all duration-200 hover:shadow-fun-lg">
+              <h3 className="text-lg font-bold text-indigo-800 font-fun mb-3">
                 <span className="mr-2">{phase.icon}</span>
                 {phase.title}
               </h3>
               <div className="space-y-3">
                 {phase.items.map((item, j) => (
                   <div key={j} className="flex gap-3">
-                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0" />
+                    <div className="w-2 h-2 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 mt-1.5 shrink-0 shadow-sm" />
                     <div>
                       <span className="font-semibold text-slate-700 text-sm">{item.label}：</span>
                       <span className="text-sm text-slate-600">{item.desc}</span>
@@ -183,30 +183,30 @@ export default function Strategy() {
       {activeTab === 'strategy' && (
         <div className="space-y-4">
           {/* 分数结构 */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <h3 className="font-bold text-slate-800 mb-3">📊 CET-6 分数结构</h3>
-            <div className="flex gap-2 h-8 rounded-lg overflow-hidden">
-              <div className="bg-indigo-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: '35%' }}>听力 35%</div>
-              <div className="bg-purple-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: '35%' }}>阅读 35%</div>
-              <div className="bg-amber-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: '15%' }}>写作 15%</div>
-              <div className="bg-emerald-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: '15%' }}>翻译 15%</div>
+          <div className="bg-white rounded-2xl border-2 border-indigo-100 shadow-fun p-5">
+            <h3 className="font-bold text-indigo-800 font-fun mb-3">📊 CET-6 分数结构</h3>
+            <div className="flex gap-1.5 h-10 rounded-2xl overflow-hidden shadow-inner">
+              <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 flex items-center justify-center text-white text-xs font-semibold rounded-l-2xl" style={{ width: '35%' }}>听力 35%</div>
+              <div className="bg-gradient-to-r from-violet-500 to-violet-600 flex items-center justify-center text-white text-xs font-semibold" style={{ width: '35%' }}>阅读 35%</div>
+              <div className="bg-gradient-to-r from-amber-400 to-amber-500 flex items-center justify-center text-white text-xs font-semibold" style={{ width: '15%' }}>写作 15%</div>
+              <div className="bg-gradient-to-r from-emerald-400 to-emerald-500 flex items-center justify-center text-white text-xs font-semibold rounded-r-2xl" style={{ width: '15%' }}>翻译 15%</div>
             </div>
             <p className="text-xs text-slate-400 mt-2">满分 710 分 | 425 分及格 | 听力阅读各 248.5 分 | 写作翻译各 106.5 分</p>
           </div>
 
           {strategies.map((s, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-5">
+            <div key={i} className="bg-white rounded-2xl border-2 border-indigo-100 border-l-4 border-l-indigo-400 shadow-fun p-5 transition-all duration-200 hover:shadow-fun-lg">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-bold text-slate-800">
+                <h3 className="text-lg font-bold text-indigo-800 font-fun">
                   <span className="mr-2">{s.icon}</span>
                   {s.title}
                 </h3>
-                <span className="text-xs bg-indigo-50 text-indigo-600 px-2 py-1 rounded font-medium">{s.score} · {s.weight}</span>
+                <span className="text-xs bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-semibold border border-indigo-100">{s.score} · {s.weight}</span>
               </div>
               <div className="space-y-2">
                 {s.tips.map((tip, j) => (
                   <div key={j} className="flex gap-2 text-sm">
-                    <span className="text-indigo-400 shrink-0">{j + 1}.</span>
+                    <span className="text-indigo-400 shrink-0 font-semibold">{j + 1}.</span>
                     <span className="text-slate-700">{tip}</span>
                   </div>
                 ))}
@@ -220,12 +220,15 @@ export default function Strategy() {
         <div className="space-y-2">
           <p className="text-sm text-slate-500 mb-4">以下是用无数考生血泪教训总结的 8 大误区，提前避开等于多拿 50 分。</p>
           {pitfalls.map((p, i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-4">
+            <div key={i} className="bg-white rounded-2xl border-2 border-rose-100 shadow-fun p-4 transition-all duration-200 hover:shadow-fun-lg hover:-translate-y-0.5">
               <div className="flex gap-3 items-start">
-                <div className="w-8 h-8 rounded-full bg-red-100 text-red-500 flex items-center justify-center text-sm font-bold shrink-0">✕</div>
+                <div className="w-9 h-9 rounded-full bg-red-100 text-red-500 flex items-center justify-center text-sm font-bold shrink-0 shadow-sm">✕</div>
                 <div className="flex-1">
-                  <div className="text-sm text-red-600 line-through mb-1">{p.wrong}</div>
-                  <div className="text-sm text-emerald-700">→ {p.right}</div>
+                  <div className="text-sm text-red-500 line-through mb-1 font-medium">{p.wrong}</div>
+                  <div className="flex gap-1.5 items-start">
+                    <span className="text-emerald-500 font-bold text-sm mt-0.5 shrink-0">→</span>
+                    <span className="text-sm text-emerald-700 font-medium">{p.right}</span>
+                  </div>
                 </div>
               </div>
             </div>

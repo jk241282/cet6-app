@@ -66,7 +66,10 @@ export function queryOne<T = Record<string, unknown>>(sql: string, params: (stri
 
 export function execute(sql: string, params: (string | number | null)[] = []): { changes: number; lastInsertRowid: number } {
   const database = getDb();
-  database.run(sql, params);
+  const stmt = database.prepare(sql);
+  stmt.bind(params);
+  stmt.step();
+  stmt.free();
   const lastId = database.exec('SELECT last_insert_rowid() as id');
   const lastInsertRowid = lastId.length > 0 ? (lastId[0].values[0][0] as number) : 0;
   const changes = database.getRowsModified();

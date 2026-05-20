@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 const listeningTips = [
-  { title: '预判策略', desc: '听力开始前快速浏览选项，预测对话主题和可能的问题类型。特别注意选项中的名词、数字和动词。' },
-  { title: '关键词捕捉', desc: '重点关注转折词(but, however, actually)、强调词(especially, in particular)、因果词(because, therefore)、数字和时间。' },
-  { title: '首尾法则', desc: '长对话和讲座篇章的开头30秒和结尾总结句往往包含关键信息，是高频出题点。' },
-  { title: '笔记技巧', desc: '边听边记关键词，用缩写和符号代替完整单词。关注: 谁(who)、做什么(what)、何时(when)、何地(where)、为什么(why)。' },
-  { title: '精听方法', desc: '精听一篇胜过泛听三十篇。方法：逐句听写 → 对照原文 → 标记连读弱读 → 跟读模仿。每天10-15分钟即可。' },
-  { title: '涂卡提醒', desc: '六级听力结束后立即收答题卡！必须边听边涂，不要留到最后统一涂。听到不确定的题先蒙一个涂上，后面没时间返回修改。' },
+  { title: '预判策略', desc: '听力开始前快速浏览选项，预测对话主题和可能的问题类型。特别注意选项中的名词、数字和动词。', icon: '🔮' },
+  { title: '关键词捕捉', desc: '重点关注转折词(but, however, actually)、强调词(especially, in particular)、因果词(because, therefore)、数字和时间。', icon: '🔑' },
+  { title: '首尾法则', desc: '长对话和讲座篇章的开头30秒和结尾总结句往往包含关键信息，是高频出题点。', icon: '📍' },
+  { title: '笔记技巧', desc: '边听边记关键词，用缩写和符号代替完整单词。关注: 谁(who)、做什么(what)、何时(when)、何地(where)、为什么(why)。', icon: '✏️' },
+  { title: '精听方法', desc: '精听一篇胜过泛听三十篇。方法：逐句听写 → 对照原文 → 标记连读弱读 → 跟读模仿。每天10-15分钟即可。', icon: '🎯' },
+  { title: '涂卡提醒', desc: '六级听力结束后立即收答题卡！必须边听边涂，不要留到最后统一涂。听到不确定的题先蒙一个涂上，后面没时间返回修改。', icon: '⚠️' },
 ];
 
 const sampleEpisodes = [
@@ -42,69 +42,90 @@ export default function Listening() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-slate-800 mb-4">听力训练</h2>
+      <h2 className="font-fun text-2xl font-bold mb-6 flex items-center gap-2">
+        <span className="text-3xl">🎧</span>
+        <span className="text-teal-600">听力训练</span>
+      </h2>
 
       {!selectedEpisode ? (
         <>
           {/* 技巧卡片 */}
           <div className="grid grid-cols-2 gap-3 mb-6">
             {listeningTips.map((tip, i) => (
-              <div key={i} className="bg-white rounded-xl border border-slate-200 p-4">
-                <h4 className="font-semibold text-sm text-slate-800 mb-1">{tip.title}</h4>
-                <p className="text-xs text-slate-500">{tip.desc}</p>
+              <div key={i} className="bg-white rounded-2xl border-2 border-teal-100 shadow-fun p-4 border-l-4 border-l-teal-400 transition-all duration-200 hover:shadow-fun-lg hover:-translate-y-0.5">
+                <div className="flex items-start gap-3">
+                  <span className="text-xl">{tip.icon}</span>
+                  <div>
+                    <h4 className="font-fun font-semibold text-sm text-teal-800 mb-1">{tip.title}</h4>
+                    <p className="text-xs text-slate-500 leading-relaxed">{tip.desc}</p>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
 
-          <h3 className="font-semibold text-slate-700 mb-3">📻 听力材料</h3>
+          <h3 className="font-fun font-semibold text-teal-700 mb-3 flex items-center gap-2">
+            <span>📻</span> 听力材料
+          </h3>
           <div className="grid gap-3">
             {sampleEpisodes.map((ep, i) => (
               <button
                 key={i}
                 onClick={() => setSelectedEpisode(ep)}
-                className="bg-white rounded-xl p-4 border border-slate-200 text-left hover:shadow-md transition-shadow"
+                className="bg-white rounded-2xl border-2 border-teal-100 shadow-fun p-5 text-left transition-all duration-200 hover:shadow-fun-lg hover:-translate-y-1 hover:border-teal-200 w-full"
               >
-                <div className="flex items-center justify-between mb-1">
-                  <h3 className="font-semibold text-slate-800 text-sm">{ep.title}</h3>
-                </div>
-                <div className="flex gap-2 mt-1">
-                  <span className="text-xs px-2 py-0.5 bg-pink-50 text-pink-600 rounded-full">{ep.type}</span>
-                  <span className="text-xs text-slate-400">{ep.examYear}</span>
+                <h3 className="font-fun font-semibold text-slate-800 text-sm hover:text-teal-600 transition-colors">
+                  {ep.title}
+                </h3>
+                <div className="flex gap-2 mt-2">
+                  <span className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${
+                    ep.type === '长对话'
+                      ? 'bg-pink-50 text-pink-600 border-pink-200'
+                      : 'bg-cyan-50 text-cyan-600 border-cyan-200'
+                  }`}>{ep.type}</span>
+                  <span className="text-xs px-2.5 py-1 bg-slate-50 text-slate-400 rounded-full font-medium">{ep.examYear}</span>
                 </div>
               </button>
             ))}
           </div>
-          <p className="text-xs text-slate-400 text-center mt-6">
+          <p className="text-xs text-slate-400 text-center mt-6 font-medium">
             📌 听力音频功能需连接后端音频服务，当前展示听力原文供精听练习。更多真题听力材料持续录入中。
           </p>
         </>
       ) : (
-        <div>
-          <button onClick={() => setSelectedEpisode(null)} className="text-sm text-indigo-600 hover:underline mb-4 inline-block">
+        <div className="animate-slide-up">
+          <button
+            onClick={() => setSelectedEpisode(null)}
+            className="btn-fun bg-gradient-to-r from-teal-400 to-cyan-500 px-4 py-2 text-sm mb-4 inline-flex items-center gap-1"
+          >
             ← 返回列表
           </button>
 
-          <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
+          <div className="bg-white rounded-3xl border-2 border-teal-100 p-6 mb-6 shadow-fun">
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs bg-pink-50 text-pink-600 px-2 py-0.5 rounded-full">{selectedEpisode.type}</span>
-              <span className="text-xs text-slate-400">{selectedEpisode.examYear}</span>
+              <span className={`text-xs px-3 py-1.5 rounded-full font-semibold border ${
+                selectedEpisode.type === '长对话'
+                  ? 'bg-pink-50 text-pink-600 border-pink-200'
+                  : 'bg-cyan-50 text-cyan-600 border-cyan-200'
+              }`}>{selectedEpisode.type}</span>
+              <span className="text-xs text-slate-400 font-medium">{selectedEpisode.examYear}</span>
             </div>
-            <h3 className="text-lg font-bold text-slate-800 mb-4">{selectedEpisode.title}</h3>
+            <h3 className="font-fun text-xl font-bold text-slate-800 mb-4">{selectedEpisode.title}</h3>
 
-            <div className="bg-amber-50 rounded-lg p-4 mb-4">
-              <h4 className="text-xs font-semibold text-amber-700 uppercase tracking-wider mb-2">🔑 关键词</h4>
+            <div className="bg-amber-50 rounded-2xl p-4 mb-4 border-2 border-amber-100">
+              <h4 className="text-xs font-bold text-amber-700 uppercase tracking-wider mb-2">🔑 关键词</h4>
               <p className="text-sm text-slate-700">{selectedEpisode.keyWords}</p>
             </div>
 
-            <div className="bg-slate-50 rounded-lg p-4 mb-4">
-              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">📝 听力原文 (Transcript)</h4>
+            <div className="bg-slate-50 rounded-2xl p-5 mb-4 border-2 border-slate-100">
+              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">📝 听力原文 (Transcript)</h4>
               <div className="text-sm text-slate-700 whitespace-pre-line leading-relaxed">
                 {selectedEpisode.transcript}
               </div>
             </div>
 
-            <details className="bg-slate-50 rounded-lg p-4">
-              <summary className="text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer">🌐 中文翻译</summary>
+            <details className="bg-slate-50 rounded-2xl p-5 border-2 border-slate-100">
+              <summary className="text-xs font-bold text-slate-500 uppercase tracking-wider cursor-pointer hover:text-teal-600 transition-colors">🌐 中文翻译</summary>
               <div className="text-sm text-slate-600 whitespace-pre-line leading-relaxed mt-3">
                 {selectedEpisode.transcriptCn}
               </div>

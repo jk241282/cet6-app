@@ -5,10 +5,14 @@
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "dev:client": "cd client && npm run dev",
     "dev:server": "cd server && npm run dev",
-    "build": "cd client && npm run build",
+    "build": "cd client && npm run build && cd ../server && npx tsc",
     "start": "cd server && npm start"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
+  },
+  "dependencies": {
+    "docx": "^9.6.1",
+    "jsdom": "^29.1.1"
   }
 }

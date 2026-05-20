@@ -72,13 +72,18 @@ router.delete('/:wordId/status', (req: AuthRequest, res) => {
 router.get('/:wordId', (req: AuthRequest, res) => {
   const { wordId } = req.params;
 
-  const word = queryOne('SELECT * FROM vocabulary WHERE id = ?', [wordId]);
+  const isNumeric = /^\d+$/.test(wordId);
+  const word = isNumeric
+    ? queryOne('SELECT * FROM vocabulary WHERE id = ?', [wordId])
+    : queryOne('SELECT * FROM vocabulary WHERE LOWER(word) = LOWER(?)', [wordId]);
+
   if (!word) return res.status(404).json({ error: '单词不存在' });
 
-  const meanings = queryAll('SELECT * FROM word_meanings WHERE word_id = ? ORDER BY is_primary DESC', [wordId]);
-  const examples = queryAll('SELECT * FROM word_examples WHERE word_id = ?', [wordId]);
-  const phrases = queryAll('SELECT * FROM word_phrases WHERE word_id = ?', [wordId]);
-  const relations = queryAll('SELECT * FROM word_relations WHERE word_id = ?', [wordId]);
+  const id = (word as any).id;
+  const meanings = queryAll('SELECT * FROM word_meanings WHERE word_id = ? ORDER BY is_primary DESC', [id]);
+  const examples = queryAll('SELECT * FROM word_examples WHERE word_id = ?', [id]);
+  const phrases = queryAll('SELECT * FROM word_phrases WHERE word_id = ?', [id]);
+  const relations = queryAll('SELECT * FROM word_relations WHERE word_id = ?', [id]);
 
   res.json({ word, meanings, examples, phrases, relations });
 });
