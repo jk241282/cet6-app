@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: cet6-app
+    runtime: node
+    region: singapore
+    plan: free
+    branch: master
+    buildCommand: cd client && npm install && npm run build && cd ../server && npm install && npx tsc
+    startCommand: cd server && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        value: https://cet6-app.onrender.com
