@@ -39,7 +39,7 @@ export default function VocabCard({ data, onStatus, index, total, showActions = 
   return (
     <div className="bg-white rounded-3xl shadow-fun-lg border-2 border-violet-100 overflow-hidden transition-all duration-300 hover:shadow-xl animate-pop">
       {/* Header - gradient card top */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#1E1B4B] via-violet-900 to-purple-900 px-6 py-7 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-br from-[#1E1B4B] via-violet-900 to-purple-900 px-4 py-5 sm:px-6 sm:py-7 text-white">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-violet-500/20 to-transparent rounded-full -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-1/2 w-80 h-20 bg-gradient-to-t from-purple-500/10 to-transparent rounded-full" />
@@ -62,7 +62,7 @@ export default function VocabCard({ data, onStatus, index, total, showActions = 
 
           {/* Word + phonetic */}
           <div className="flex items-baseline gap-3 flex-wrap">
-            <h2 className="font-fun text-5xl font-bold tracking-tight">{word.word}</h2>
+            <h2 className="font-fun text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">{word.word}</h2>
             <span className="text-violet-300 text-lg font-light">/{word.phonetic_us}/</span>
           </div>
 
@@ -84,7 +84,7 @@ export default function VocabCard({ data, onStatus, index, total, showActions = 
       </div>
 
       {/* Body */}
-      <div className="p-6 space-y-5">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-5">
         {/* Meanings */}
         {coreMeanings.length > 0 && (
           <CardSection title="释义" icon="📖" color="violet">
@@ -202,21 +202,21 @@ export default function VocabCard({ data, onStatus, index, total, showActions = 
         <div className="flex border-t-2 border-slate-50 bg-gradient-to-r from-slate-50 to-violet-50/50">
           <button
             onClick={() => onStatus('skipped')}
-            className="flex-1 py-4 text-slate-400 text-sm font-semibold hover:bg-slate-100 transition-colors flex items-center justify-center gap-2 group"
+            className="flex-1 py-3 sm:py-4 text-slate-400 text-xs sm:text-sm font-semibold hover:bg-slate-100 transition-colors flex items-center justify-center gap-1 sm:gap-2 group"
           >
-            <span className="group-hover:scale-110 transition-transform">⏭</span> 跳过
+            <span className="group-hover:scale-110 transition-transform">⏭</span> <span className="hidden sm:inline">跳过</span>
           </button>
           <button
             onClick={() => onStatus('learning')}
-            className="flex-1 py-4 text-amber-500 text-sm font-semibold hover:bg-amber-50 transition-colors border-x-2 border-slate-100 flex items-center justify-center gap-2 group"
+            className="flex-1 py-3 sm:py-4 text-amber-500 text-xs sm:text-sm font-semibold hover:bg-amber-50 transition-colors border-x-2 border-slate-100 flex items-center justify-center gap-1 sm:gap-2 group"
           >
-            <span className="group-hover:scale-110 transition-transform">🔄</span> 还不熟
+            <span className="group-hover:scale-110 transition-transform">🔄</span> <span className="hidden sm:inline">还不熟</span>
           </button>
           <button
             onClick={() => onStatus('mastered')}
-            className="flex-1 py-4 text-emerald-600 text-sm font-semibold hover:bg-emerald-50 transition-colors flex items-center justify-center gap-2 group"
+            className="flex-1 py-3 sm:py-4 text-emerald-600 text-xs sm:text-sm font-semibold hover:bg-emerald-50 transition-colors flex items-center justify-center gap-1 sm:gap-2 group"
           >
-            <span className="group-hover:scale-110 transition-transform">✅</span> 已掌握
+            <span className="group-hover:scale-110 transition-transform">✅</span> <span className="hidden sm:inline">已掌握</span>
           </button>
         </div>
       )}

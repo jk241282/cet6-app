@@ -19,7 +19,7 @@ export default function Vocabulary() {
             📚 7634 词
           </span>
         </div>
-        <div className="flex bg-slate-100/80 rounded-2xl p-1.5 gap-1">
+        <div className="flex bg-slate-100/80 rounded-2xl p-1 sm:p-1.5 gap-0.5 sm:gap-1">
           {[
             { key: 'learn', label: '背诵', icon: '📝' },
             { key: 'search', label: '查询', icon: '🔍' },
@@ -28,14 +28,14 @@ export default function Vocabulary() {
             <button
               key={key}
               onClick={() => setTab(key as typeof tab)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
+              className={`flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 ${
                 tab === key
                   ? 'bg-white text-violet-600 shadow-fun shadow-violet-200/30'
                   : 'text-slate-400 hover:text-slate-600'
               }`}
             >
-              <span>{icon}</span>
-              <span>{label}</span>
+              <span className="text-sm sm:text-base">{icon}</span>
+              <span className="hidden xs:inline">{label}</span>
             </button>
           ))}
         </div>
@@ -428,7 +428,7 @@ function ListTab() {
             )}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5">
             {words.map((w: any) => {
               const st = w.user_status;
               const statusInfo = st ? statusConfig[st] : null;
@@ -436,7 +436,7 @@ function ListTab() {
               return (
                 <div
                   key={w.id}
-                  className={`bg-white rounded-2xl p-4 border-2 transition-all duration-200 hover:shadow-fun group cursor-pointer ${
+                  className={`bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 border-2 transition-all duration-200 hover:shadow-fun group cursor-pointer ${
                     st === 'mastered' ? 'border-emerald-200 bg-emerald-50/20' :
                     st === 'learning' ? 'border-amber-200 bg-amber-50/20' :
                     st === 'skipped' ? 'border-slate-200 bg-slate-50/30' :
@@ -444,35 +444,35 @@ function ListTab() {
                   }`}
                   onClick={() => !isEditing && loadDetail(w.id)}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-fun font-bold text-slate-800 group-hover:text-violet-600 transition-colors text-sm">
+                  <div className="flex items-center justify-between mb-1 sm:mb-1.5">
+                    <span className="font-fun font-bold text-slate-800 group-hover:text-violet-600 transition-colors text-xs sm:text-sm">
                       {w.word}
                     </span>
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1 sm:gap-1.5">
                       {w.exam_frequency && parseInt(w.exam_frequency) > 0 && (
-                        <span className="text-xs text-amber-500 font-bold">🔥{w.exam_frequency}</span>
+                        <span className="text-[10px] sm:text-xs text-amber-500 font-bold">🔥{w.exam_frequency}</span>
                       )}
-                      <span className="text-xs text-slate-400 font-medium">{w.part_of_speech?.split(' ')[0]}</span>
+                      <span className="text-[10px] sm:text-xs text-slate-400 font-medium truncate max-w-[50px] sm:max-w-none">{w.part_of_speech?.split(' ')[0]}</span>
                     </div>
                   </div>
-                  <div className="text-xs text-slate-500 mb-2 truncate">{w.meaning_cn}</div>
+                  <div className="text-[11px] sm:text-xs text-slate-500 mb-1.5 sm:mb-2 truncate">{w.meaning_cn}</div>
                   <div className="flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
                     {statusInfo ? (
-                      <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${statusInfo.style}`}>{statusInfo.label}</span>
+                      <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full border font-semibold ${statusInfo.style}`}>{statusInfo.label}</span>
                     ) : (
-                      <span className="text-xs text-slate-300 font-medium">未标记</span>
+                      <span className="text-[10px] sm:text-xs text-slate-300 font-medium">未标记</span>
                     )}
                     {isEditing ? (
-                      <div className="flex gap-1">
-                        <button onClick={() => changeStatus(w.id, 'mastered')} className="text-xs text-emerald-600 hover:bg-emerald-50 px-2 py-0.5 rounded-lg font-semibold">掌握</button>
-                        <button onClick={() => changeStatus(w.id, 'learning')} className="text-xs text-amber-600 hover:bg-amber-50 px-2 py-0.5 rounded-lg font-semibold">不熟</button>
-                        <button onClick={() => changeStatus(w.id, 'skipped')} className="text-xs text-slate-500 hover:bg-slate-100 px-2 py-0.5 rounded-lg font-semibold">跳过</button>
-                        {st && <button onClick={() => cancelStatus(w.id)} className="text-xs text-red-400 hover:bg-red-50 px-2 py-0.5 rounded-lg">清除</button>}
-                        <button onClick={() => setEditingId(null)} className="text-xs text-slate-400 px-1 py-0.5">✕</button>
+                      <div className="flex gap-0.5 sm:gap-1 flex-wrap">
+                        <button onClick={() => changeStatus(w.id, 'mastered')} className="text-[10px] sm:text-xs text-emerald-600 hover:bg-emerald-50 px-1.5 sm:px-2 py-0.5 rounded-lg font-semibold">掌握</button>
+                        <button onClick={() => changeStatus(w.id, 'learning')} className="text-[10px] sm:text-xs text-amber-600 hover:bg-amber-50 px-1.5 sm:px-2 py-0.5 rounded-lg font-semibold">不熟</button>
+                        <button onClick={() => changeStatus(w.id, 'skipped')} className="text-[10px] sm:text-xs text-slate-500 hover:bg-slate-100 px-1.5 sm:px-2 py-0.5 rounded-lg font-semibold">跳过</button>
+                        {st && <button onClick={() => cancelStatus(w.id)} className="text-[10px] sm:text-xs text-red-400 hover:bg-red-50 px-1.5 sm:px-2 py-0.5 rounded-lg">清除</button>}
+                        <button onClick={() => setEditingId(null)} className="text-[10px] sm:text-xs text-slate-400 px-1 py-0.5">✕</button>
                       </div>
                     ) : (
                       <button onClick={() => setEditingId(w.id)}
-                        className="text-xs text-violet-500 hover:bg-violet-50 px-2.5 py-1 rounded-lg font-semibold opacity-0 group-hover:opacity-100 transition-all">
+                        className="text-[10px] sm:text-xs text-violet-500 hover:bg-violet-50 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg font-semibold opacity-0 group-hover:opacity-100 transition-all">
                         标记
                       </button>
                     )}
