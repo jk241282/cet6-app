@@ -119,18 +119,20 @@ vocab.get('/list', async (c) => {
   const status = c.req.query('status');
   const offset = (page - 1) * limit;
 
-  let conds = '';
-  const params: any[] = [userId];
-  if (letter && letter !== 'all') { conds += ' AND v.word LIKE ?'; params.push(`${letter}%`); }
+  let whereConds = '';
+  const joinParams: any[] = [userId];
+  const whereParams: any[] = [];
+  if (letter && letter !== 'all') { whereConds += ' AND v.word LIKE ?'; whereParams.push(`${letter}%`); }
   if (status && status !== 'all') {
-    if (status === 'none') conds += ' AND uv.status IS NULL';
-    else { conds += ' AND uv.status = ?'; params.push(status); }
+    if (status === 'none') whereConds += ' AND uv.status IS NULL';
+    else { whereConds += ' AND uv.status = ?'; whereParams.push(status); }
   }
 
-  const base = `FROM vocabulary v LEFT JOIN word_meanings wm ON v.id=wm.word_id AND wm.is_primary=1 LEFT JOIN user_vocabulary uv ON v.id=uv.word_id AND uv.user_id=?${conds}`;
-  const countResult = await c.env.DB.prepare(`SELECT COUNT(*) as count ${base}`).bind(...params).first();
+  const base = `FROM vocabulary v LEFT JOIN word_meanings wm ON v.id=wm.word_id AND wm.is_primary=1 LEFT JOIN user_vocabulary uv ON v.id=uv.word_id AND uv.user_id=? WHERE 1=1${whereConds}`;
+  const allParams = [...joinParams, ...whereParams];
+  const countResult = await c.env.DB.prepare(`SELECT COUNT(*) as count ${base}`).bind(...allParams).first();
   const total = (countResult as any)?.count || 0;
-  const { results } = await c.env.DB.prepare(`SELECT v.*, wm.meaning_cn, uv.status as user_status, uv.last_reviewed ${base} ORDER BY v.word ASC LIMIT ? OFFSET ?`).bind(...params, limit, offset).all();
+  const { results } = await c.env.DB.prepare(`SELECT v.*, wm.meaning_cn, uv.status as user_status, uv.last_reviewed ${base} ORDER BY v.word ASC LIMIT ? OFFSET ?`).bind(...allParams, limit, offset).all();
   return c.json({ words: results, total, letter: letter || 'all' });
 });
 
