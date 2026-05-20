@@ -1,0 +1,11 @@
+name = "cet6-api"
+main = "src/index.ts"
+compatibility_date = "2025-05-20"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cet6-db"
+database_id = "a2d1c9b2-de57-43f5-b0fa-c7cd15fdacaa"
+
+[observability]
+enabled = true
